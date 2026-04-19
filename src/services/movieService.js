@@ -1,5 +1,6 @@
 import prisma from "../models/prisma.js"
 
+// Récupéres tous les films avec pagination
 const getAllMovies = async ({ page = 1, limit = 10 } = {}) => {
     const skip = (page - 1) * limit;
     const movies = await prisma.movie.findMany({
@@ -10,8 +11,10 @@ const getAllMovies = async ({ page = 1, limit = 10 } = {}) => {
     return { data: movies, total: count, page, limit };
 };
 
+// Récupéres un film par son ID
 const getMovieById = async (id) => {
     const movie = await prisma.movie.findUnique({ where: { id } });
+    // Si le film n'existe pas, on lance une erreur 404
     if (!movie) {
         const error = new Error("Movie not found");
         error.statusCode = 404;
@@ -20,6 +23,7 @@ const getMovieById = async (id) => {
     return { data: movie };
 };
 
+// On crée un nouveau film
 const createMovie = async (movieData) => {
     const movie = await prisma.movie.create({
         data: {
@@ -34,6 +38,7 @@ const createMovie = async (movieData) => {
     return { data: movie };
 };
 
+// Mettre à jour un film
 const updateMovie = async (id, movieData) => {
     const movie = await prisma.movie.update({
         where: { id },
@@ -49,11 +54,13 @@ const updateMovie = async (id, movieData) => {
     return { data: movie };
 };
 
+// Supprimes un film s'il existe
 const deleteMovie = async (id) => {
     await getMovieById(id);
     return prisma.movie.delete({ where: { id } });
 };
 
+// Recherches des films par titre ou genre
 const searchMovies = async ({ title, genre }) => {
     const movies = await prisma.movie.findMany({
         where: {

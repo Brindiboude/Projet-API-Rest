@@ -1,6 +1,7 @@
 import prisma from "../models/prisma.js"
 import { hashPassword } from "../utils/passwords.js";
 
+// Champs à retourner pour un utilisateur, sans le mot de passe
 const userSelect = {
     id: true,
     name: true,
@@ -9,6 +10,7 @@ const userSelect = {
     updatedAt: true,
 };
 
+// Récupéres tous les utilisateurs avec pagination
 const getAllUsers = async ({ page = 1, limit = 10 } = {}) => {
     const skip = (page - 1) * limit;
     const usersList = await prisma.user.findMany({
@@ -25,6 +27,7 @@ const getAllUsers = async ({ page = 1, limit = 10 } = {}) => {
     };
 };
 
+// Récupéres un utilisateur par son ID
 const getUserById = async (id) => {
     const user = await prisma.user.findUnique({
         where: { id },
@@ -33,6 +36,7 @@ const getUserById = async (id) => {
     return { data: user };
 };
 
+// On crér un nouvel utilisateur avec le mot de passe hashé
 const createUser = async (userData) => {
     const createdUser = await prisma.user.create({
         data: {
@@ -45,6 +49,7 @@ const createUser = async (userData) => {
     return { data: createdUser };
 };
 
+// Mettre à jour un utilisateur
 const updateUser = async (id, userData) => {
     const updatedUser = await prisma.user.update({
         where: { id },
@@ -57,6 +62,7 @@ const updateUser = async (id, userData) => {
     return { data: updatedUser };
 };
 
+// Supprimes un utilisateur s'il existe
 const deleteUser = async (id) => {
     const user = await getUserById(id);
     if (user.data) {
