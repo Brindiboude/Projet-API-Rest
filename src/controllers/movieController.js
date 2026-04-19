@@ -2,7 +2,10 @@ import * as movieService from "../services/movieService.js";
 
 const getAllMovies = async (req, res, next) => {
     try {
-        const result = await movieService.getAllMovies();
+	// Pour remplacer les if successfis par des OU logiques
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const result = await movieService.getAllMovies({ page, limit });
         res.json(result);
     } catch (error) {
         next(error);

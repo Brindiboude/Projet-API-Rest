@@ -1,9 +1,13 @@
 import prisma from "../models/prisma.js"
 
-const getAllMovies = async () => {
-    const movies = await prisma.movie.findMany();
+const getAllMovies = async ({ page = 1, limit = 10 } = {}) => {
+    const skip = (page - 1) * limit;
+    const movies = await prisma.movie.findMany({
+        skip,
+        take: limit,
+    });
     const count = await prisma.movie.count();
-    return { data: movies, total: count };
+    return { data: movies, total: count, page, limit };
 };
 
 const getMovieById = async (id) => {
